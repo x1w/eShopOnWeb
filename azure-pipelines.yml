@@ -27,7 +27,7 @@ steps:
 
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'x1w/eShopOnWeb'
+    azureSubscription: 'ServiceConnection'
     appName: 'eShopOnWeb'
     package: '$(Build.ArtifactStagingDirectory)/myapp'
     appType: 'webApp'
