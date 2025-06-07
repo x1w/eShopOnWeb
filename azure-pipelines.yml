@@ -8,18 +8,27 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- checkout: self
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'src/Web/Web.csproj'
+    arguments: '--configuration $(buildConfiguration)'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(buildConfiguration)'
-    zipAfterPublish: true
-- task: AzureRmWebAppDeployment@4
+    projects: 'src/Web/Web.csproj'
+    arguments: '--configuration ${buildConfiguration} --output ${Build.ArtifactStagingDirectory}/myapp'
+
+- task: PublishBuildArtifacts@1
   inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: '<service-connection-name>'
+    PathtoPublish: '${Build.ArtifactStagingDirectory}/myapp'
+    ArtifactName: '.net-app'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'x1w/eShopOnWeb'
+    appName: 'eShopOnWeb'
+    package: '$(Build.ArtifactStagingDirectory)/myapp'
     appType: 'webApp'
-    WebAppName: 'eShopOnWeb'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-    enableCustomDeployment: true
-    DeploymentType: 'webDeploy'
+    deploymentMethod: 'zipDeploy'
