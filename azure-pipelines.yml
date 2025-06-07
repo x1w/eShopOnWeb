@@ -20,10 +20,14 @@ steps:
     projects: 'src/Web/Web.csproj'
     arguments: '--configuration ${buildConfiguration} --output ${Build.ArtifactStagingDirectory}/myapp'
 
+- task: DownloadBuildArtifacts@0
+  inputs:
+    artifactName: 'myapp'
+    downloadPath: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '${Build.ArtifactStagingDirectory}/myapp'
-    ArtifactName: '.net-app'
+    ArtifactName: 'myapp'
 
 - task: AzureWebApp@1
   inputs:
